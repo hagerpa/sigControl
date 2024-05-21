@@ -1,0 +1,13 @@
+#!/bin/bash --login
+#SBATCH --job-name=sig_control
+#SBATCH --output=outs/twap_%a.out
+#SBATCH --time=24:00:00
+#SBATCH --mem=128G
+#SBATCH --mail-type=end,fail,time_limit
+#SBATCH --mail-user=hagerpa@gmail.com
+echo "######### JOB START ########"
+
+which python
+python run_twap.py $SLURM_ARRAY_TASK_ID
+
+
