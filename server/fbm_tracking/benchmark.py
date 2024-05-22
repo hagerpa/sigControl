@@ -56,7 +56,7 @@ def benchmark(H, kappa=0.1):
             r = (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
             r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
             r *= c_H / (H + 1 / 2) * (u - s) ** (H + 1 / 2)
-            return H
+            return r
 
         a = c_H / (H + 1 / 2) * (T / s) ** (H - 1 / 2) * (T - s) ** (H + 1 / 2)
 
