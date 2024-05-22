@@ -26,7 +26,7 @@ if SERVER:
     n_batches = 2 ** 10
     validation_size = 1024 * 16 * 8
 
-    epochs = 31
+    epochs = 51
     MC_ = 2 ** 20
     MAX_GB = 32
 else:
@@ -81,7 +81,7 @@ JOBS = [
     for N in [1, 2, 3, 4, 5]
     for H in np.arange(11) / 10.0
     for mod_ in [
-        {"space": 'log', "nn_hidden": 2},
+        {"space": 'log', "nn_hidden": 3},
         {"space": 'sig', "nn_hidden": 0}
     ]
 ]
