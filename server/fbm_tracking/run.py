@@ -18,7 +18,7 @@ result_path = "./results_server/" if SERVER else "./results_local/"
 
 jobs = dict()
 
-learning_rate = 1.0
+learning_rate = 0.1
 
 
 if SERVER:
@@ -26,7 +26,7 @@ if SERVER:
     n_batches = 2 ** 10
     validation_size = 1024 * 16 * 8
 
-    epochs = 101
+    epochs = 31
     MC_ = 2 ** 20
     MAX_GB = 32
 else:
