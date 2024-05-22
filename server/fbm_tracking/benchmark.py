@@ -69,7 +69,7 @@ def benchmark(H, kappa=0.1):
                 return r * cosh(tau(u))
 
             def f(u):
-                return f1(u) + f2(u)
+                return - f1(u) + f2(u)
 
             return a + quad(f, t, T, points=[t, T], full_output=1)[0]
 
