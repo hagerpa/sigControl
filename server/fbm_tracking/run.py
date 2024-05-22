@@ -77,9 +77,9 @@ params = {
 
 JOBS = [
     {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_}
-    for dscrt in [100, 1000]
+    for dscrt in [1000]
     for N in [1, 2, 3, 4, 5]
-    for H in np.arange(11) / 10.0
+    for H in [1.0/16, 1.0/8, 1.0/4, 1.0/3, 1.0/2, 0.75, 1.0]
     for mod_ in [
         {"space": 'log', "nn_hidden": 2},
         {"space": 'sig', "nn_hidden": 0}
