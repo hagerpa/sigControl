@@ -11,7 +11,7 @@ class DNNStrategy(torch.nn.Module):
         """
         super(DNNStrategy, self).__init__()
         # _, d = x.shape
-        hidden = max(in_dim + 30, 10)  # number of neurons
+        hidden = in_dim + 30
         self.n_hidden = nn_hidden
         a_dim = in_dim
         layers = [nn.Dropout(nn_dropout)]

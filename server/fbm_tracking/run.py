@@ -76,11 +76,14 @@ params = {
 
 
 JOBS = [
-    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, "space": space}
+    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_}
     for dscrt in [100, 1000]
     for N in [1, 2, 3, 4, 5]
     for H in np.arange(11) / 10.0
-    for space in ['log', 'sig']
+    for mod_ in [
+        {"space": 'log', "nn_hidden": 2},
+        {"space": 'sig', "nn_hidden": 0}
+    ]
 ]
 
 pfs = {
