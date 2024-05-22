@@ -52,23 +52,26 @@ def benchmark(H, kappa=0.1):
         return quad(f, t, T, points=[t, T], full_output=1)[0]
 
     def alpha_diag(s):
-        def f1(u):
-            r = (H - 1 / 2) * (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
-            r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
-            r *= c_H / (H + 1 / 2) * (u - s) ** (H + 1 / 2)
-            return r
+        if s == 0:
+            return 0
+        else:
+            def f1(u):
+                r = (H - 1 / 2) * (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
+                r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
+                r *= c_H / (H + 1 / 2) * (u - s) ** (H + 1 / 2)
+                return r
 
-        a = c_H / (H + 1 / 2) * (T / s) ** (H - 1 / 2) * (T - s) ** (H + 1 / 2)
+            a = c_H / (H + 1 / 2) * (T / s) ** (H - 1 / 2) * (T - s) ** (H + 1 / 2)
 
-        def f2(u):
-            r = s ** (H - 1 / 2) * H / c_H
-            r *= 1 - beta_inc(1 - 2 * H, H + 1 / 2, s / u)
-            return r * cosh(tau(u))
+            def f2(u):
+                r = s ** (H - 1 / 2) * H / c_H
+                r *= 1 - beta_inc(1 - 2 * H, H + 1 / 2, s / u)
+                return r * cosh(tau(u))
 
-        def f(u):
-            return f1(u) + f2(u)
+            def f(u):
+                return f1(u) + f2(u)
 
-        return a + quad(f, t, T, points=[t, T], full_output=1)[0]
+            return a + quad(f, t, T, points=[t, T], full_output=1)[0]
 
     def overline_alpha_raw(t, s):
         f = lambda u: z_prime(u, s) * sinh(tau(u))
