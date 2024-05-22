@@ -31,6 +31,22 @@ def benchmark(H, kappa=0.1):
     def z_prime(t, s):
         return c_H * (H - 0.5) * s ** (0.5 - H) * t ** (H - 0.5) * (t - s) ** (H - 1.5)
 
+    def z_(t, s):
+        f = lambda u: u ** (H - 3 / 2) * (u - s) ** (H - 0.5)
+        res = quad(f, s, t, points=[s, t], full_output=1)[0]
+        res *= - (H - 0.5) * s ** (0.5 - H)
+        res += (t / s) ** (H - 0.5) * (t - s) ** (H - 1 / 2)
+        res *= c_H
+        return res
+
+    if H > 0.5:
+        z = z_
+    else:
+        for _ in range(100):
+            t = np.random.uniform()
+            s = np.random.uniform(0, t)
+            assert np.allclose(z(t, s), z_(t, s)), "{}, {}".format(z(t, s), z_(t, s))
+
     def alpha_raw(t, s):
         f = lambda u: z(u, s) * cosh(tau(u))
         return quad(f, t, T, points=[t, T], full_output=1)[0]
