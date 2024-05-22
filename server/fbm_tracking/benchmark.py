@@ -53,7 +53,7 @@ def benchmark(H, kappa=0.1):
 
     def alpha_diag(s):
         def f1(u):
-            r = (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
+            r = (H - 1 / 2) * (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
             r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
             r *= c_H / (H + 1 / 2) * (u - s) ** (H + 1 / 2)
             return r
