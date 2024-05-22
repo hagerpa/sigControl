@@ -81,7 +81,7 @@ JOBS = [
     for N in [1, 2, 3, 4, 5]
     for H in np.arange(11) / 10.0
     for mod_ in [
-        {"space": 'log', "nn_hidden": 3},
+        {"space": 'log', "nn_hidden": 2},
         {"space": 'sig', "nn_hidden": 0}
     ]
 ]
@@ -123,7 +123,8 @@ def new_batch(MC, steps, H, **kwargs):
 
 
 def loss_fn(time, Y, U, X, **kwargs):
-    payoff = 0.5 * (Y ** 2 + PENALTY * U ** 2)
+
+    payoff = 0.5 * (Y[:,:-1] ** 2 + PENALTY * U[:,:-1] ** 2)
     l_ = torch.mean(payoff) * (time[-1] - time[0])
     v = torch.var(torch.mean(payoff, dim=1) * (time[-1] - time[0]))
     return l_, v
