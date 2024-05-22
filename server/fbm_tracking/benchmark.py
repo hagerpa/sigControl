@@ -51,6 +51,25 @@ def benchmark(H, kappa=0.1):
         f = lambda u: z(u, s) * cosh(tau(u))
         return quad(f, t, T, points=[t, T], full_output=1)[0]
 
+    def alpha_diag(s):
+        def f1(u):
+            r = (u / s) ** (H - 3 / 2) * cosh(tau(u))
+            r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
+            r *= c_H / (H + 1 / 2) * (u - s) ** (H + 1 / 2)
+            return H
+
+        a = c_H / (H + 1 / 2) * (T / s) ** (H - 1 / 2) * (T - s) ** (H + 1 / 2)
+
+        def f2(u):
+            r = s ** (H - 1 / 2) * H / c_H
+            r *= 1 - beta_inc(1 - 2 * H, H + 1 / 2, s / u)
+            return r * cosh(tau(u))
+
+        def f(u):
+            return f1(u) + f2(u)
+
+        return a + quad(f, t, T, points=[t, T], full_output=1)[0]
+
     def overline_alpha_raw(t, s):
         f = lambda u: z_prime(u, s) * sinh(tau(u))
         return quad(f, t, T, points=[t, T], full_output=1)[0]
@@ -70,7 +89,7 @@ def benchmark(H, kappa=0.1):
     sq_dist = 0.5 * quad(sq_f, 0, T, points=[0, T], full_output=1)[0]
 
     # QV term
-    qv_f = lambda s: alpha_raw(s, s) ** 2 / (np.sqrt(kappa) * sinh(tau(s)) * cosh(tau(s)))
+    qv_f = lambda s: alpha_diag(s) ** 2 / (np.sqrt(kappa) * sinh(tau(s)) * cosh(tau(s)))
     qv_term = 0.5 * quad(qv_f, 0, T)[0]
 
     return qv_term, sq_dist
@@ -87,4 +106,5 @@ if __name__ == "__main__":
         H_ = H_space[int(sys.argv[1]) - 1]
         qv, sq = benchmark(H_)
         res = [{"H": H_, "res": qv + sq, "qv": qv, "sq": sq}]
+        print(res)
         pd.DataFrame(res).to_pickle("benchmarks/bench_{}.pkl".format(int(sys.argv[1])))
