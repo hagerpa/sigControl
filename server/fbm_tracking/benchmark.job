@@ -1,6 +1,6 @@
 #!/bin/bash --login
 #SBATCH --job-name=tracking
-#SBATCH --output=outs/%a.out
+#SBATCH --output=outs/bench_%a.out
 #SBATCH --time=2:00:00
 #SBATCH --mem=16G
 #SBATCH --mail-type=end,fail,time_limit

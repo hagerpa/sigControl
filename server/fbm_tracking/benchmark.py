@@ -87,4 +87,4 @@ if __name__ == "__main__":
         H_ = H_space[int(sys.argv[1]) - 1]
         qv, sq = benchmark(H_)
         res = [{"H": H_, "res": qv + sq, "qv": qv, "sq": sq}]
-        pd.DataFrame(res).to_pickle("bench_{}.pkl".format(int(sys.argv[1])))
+        pd.DataFrame(res).to_pickle("benchmarks/bench_{}.pkl".format(int(sys.argv[1])))
