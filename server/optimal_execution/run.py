@@ -18,17 +18,13 @@ result_path = "./results_server/" if SERVER else "./results_local/"
 
 jobs = dict()
 
-learning_rate = 1
-
 if SERVER:
-    batch_size = 1024 * 16 * 8
-    validation_size = 1024 * 16 * 16
+    validation_size = 1024 * 16 * 8
 
     epochs = 2
     MC_ = validation_size
     MAX_GB = 128
 else:
-    batch_size = 1024
     validation_size = 1024 * 8
 
     epochs = 2
@@ -47,46 +43,43 @@ params = {
     "restarts": RESTARTS,
     "steps_per_restart": 1,
     "epochs": epochs,
-    "batch_size": batch_size,
     "validation_size": validation_size,
 
-    "optim": "LBFGS",
-    "learning_rate": learning_rate,
-    "optim_history_size": 40,
-    "optim_line_search_fn": "strong_wolfe",
-    "optim_tolerance_change": 0.0,
-    "optim_max_iter": 100,
+    "optim": "Adam",
+    "learning_rate": 0.1,
+    "batch_size": 512,
+    "n_batches": 2 ** 10,
+
+    # "optim": "LBFGS",
+    # "optim_history_size": 40,
+    # "optim_line_search_fn": "strong_wolfe",
+    # "optim_tolerance_change": 0.0,
+    # "optim_max_iter": 100,
+    # "learning_rate": 1.0,
+    # "n_batches": 1,
+    # "batch_size": 1024 * 16 * 8,
 
     "max_gb": MAX_GB,
     "MC_": MC_,
     "sig_comp": 'tX',
+
+    "save_model": True,
 }
 
 
 def update_params(restarts_, epochs_, optim, best_model):
-    if epochs_ == 30:
-        return {
-            "batch_size": batch_size * 1,
-        }
-    elif epochs_ == 60:
-        return {
-            "batch_size": batch_size * 1,
-        }
-    elif epochs_ == 70:
-        return {
-            "batch_size": batch_size * 1,
-        }
-    else:
-        return {}
+    return {}
 
 
 JOBS = [
-    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, "space": space}
+    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_}
     for dscrt in [100]
-    for N in [1, 2, 3, 4]
-    # for sig_comp in MODES
-    for H in [1 / 4, 1 / 3, 1 / 2, 0.7, 0.9, 1.0]
-    for space in ['log', 'sig']
+    for N in [1, 2, 3, 4, 5]
+    for H in [1.0 / 16, 1.0 / 8, 1.0 / 4, 1.0 / 3, 1.0 / 2, 3.0 / 4, 7.0 / 8, 1.0]
+    for mod_ in [
+        {"space": 'log', "nn_hidden": 2},
+        {"space": 'sig', "nn_hidden": 0}
+    ]
 ]
 
 pfs = {
@@ -99,7 +92,7 @@ def rde_model(Y, U, dX):
     return - U * dX[:, 0]
 
 
-from examples import new_batch
+from server.fbm_tracking.run import new_batch
 
 TWAP = 1.0 * INITIAL - INITIAL ** 2 * KAPPA * KAPPA_T / (KAPPA + 1.0 * KAPPA_T)
 
@@ -108,7 +101,7 @@ TWAP = 1.0 * INITIAL - INITIAL ** 2 * KAPPA * KAPPA_T / (KAPPA + 1.0 * KAPPA_T)
 
 # noinspection PyUnreachableCode
 def loss_fn(time, Y, U, X, **kwargs):
-    if False:
+    if False:  # alternative expression of cost functional
         dP = SIGMA * (X[:, 1:, 1] - X[:, :-1, 1])
         gains = 1.0 + torch.sum(Y[:, :-1] * dP, dim=1)
     else:
