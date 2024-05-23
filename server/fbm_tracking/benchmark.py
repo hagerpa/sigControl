@@ -43,35 +43,35 @@ def benchmark(H, kappa=0.1):
         z = z_
     else:
         for _ in range(100):
-            t = np.random.uniform()
-            s = np.random.uniform(0, t)
-            assert np.allclose(z(t, s), z_(t, s)), "{}, {}".format(z(t, s), z_(t, s))
+            t_ = np.random.uniform()
+            s_ = np.random.uniform(0, t_)
+            assert np.allclose(z(t_, s_), z_(t_, s_)), "{}, {}".format(z(t_, s_), z_(t_, s_))
 
     def alpha_raw(t, s):
         f = lambda u: z(u, s) * cosh(tau(u))
         return quad(f, t, T, points=[t, T], full_output=1)[0]
 
+    def alpha_diag_raw(s):
+        def f1(u):
+            r = (H - 1 / 2) * (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
+            r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
+            r *= c_H * (u - s) ** (H + 1 / 2) / (H + 1 / 2)
+            return r
+
+        a = c_H * (T / s) ** (H - 1 / 2) * (T - s) ** (H + 1 / 2) / (H + 1 / 2)
+        def f2(u):
+            r = s ** (H - 1 / 2) * H / c_H
+            r *= 1 - beta_inc(1 - 2 * H, H + 1 / 2, s / u)
+            return r * cosh(tau(u))
+        def f(u):
+            return - f1(u) + f2(u)
+        return a + quad(f, s, T, points=[s, T], full_output=1)[0]
+
     def alpha_diag(s):
-        if s == 0:
-            return 0
-        else:
-            def f1(u):
-                r = (H - 1 / 2) * (u / s) ** (H - 3 / 2) * cosh(tau(u)) / s
-                r += - (u / s) ** (H - 1 / 2) * sinh(tau(u)) / np.sqrt(kappa)
-                r *= c_H / (H + 1 / 2) * (u - s) ** (H + 1 / 2)
-                return r
-
-            a = c_H / (H + 1 / 2) * (T / s) ** (H - 1 / 2) * (T - s) ** (H + 1 / 2)
-
-            def f2(u):
-                r = s ** (H - 1 / 2) * H / c_H
-                r *= 1 - beta_inc(1 - 2 * H, H + 1 / 2, s / u)
-                return r * cosh(tau(u))
-
-            def f(u):
-                return - f1(u) + f2(u)
-
-            return a + quad(f, s, T, points=[s, T], full_output=1)[0]
+        if H >= 0.5:
+            return alpha_raw(s,s)
+        if H < 0.5:
+            return alpha_diag_raw(max(0.0000001, s))
 
     def overline_alpha_raw(t, s):
         f = lambda u: z_prime(u, s) * sinh(tau(u))
@@ -84,7 +84,7 @@ def benchmark(H, kappa=0.1):
             f = lambda s: overline_alpha_raw(t, s) ** 2
             return quad(f, 0, t, points=[0, t], full_output=1)[0]
 
-    vs = np.array([beta_raw(t) for t in t_span])
+    vs = np.array([beta_raw(t_) for t_ in t_span])
     beta = PchipInterpolator(t_span, vs)
 
     # Squared distance term
