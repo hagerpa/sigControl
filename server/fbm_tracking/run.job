@@ -1,7 +1,7 @@
 #!/bin/bash --login
 #SBATCH --job-name=tracking
 #SBATCH --output=outs/%a.out
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem=128G
 #SBATCH --mail-type=end,fail,time_limit
 #SBATCH --mail-user=hagerpa@gmail.com

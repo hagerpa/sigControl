@@ -213,7 +213,7 @@ def run(sys_args, JOBS, build_strategy, rde_model, loss_fn, new_batch, params, u
         print(new_res, flush=True)
         results += [new_res]
 
-        pd.DataFrame(results).to_pickle(result_path + "benchmarks/{}.pkl".format(int(sys_args[1])))
+        pd.DataFrame(results).to_pickle(result_path + "{}.pkl".format(int(sys_args[1])))
 
         if "save_model" in params and params["save_model"]:
             with open("./saved_models/" + "{}.pkl".format(int(sys_args[1])), 'wb') as file:
