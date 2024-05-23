@@ -20,13 +20,12 @@ jobs = dict()
 
 learning_rate = 0.1
 
-
 if SERVER:
     batch_size = 512
     n_batches = 2 ** 10
     validation_size = 1024 * 16 * 8
 
-    epochs = 51
+    epochs = 31
     MC_ = 2 ** 20
     MAX_GB = 32
 else:
@@ -46,7 +45,6 @@ params = {
 
     "restarts": RESTARTS,
     "steps_per_restart": 3,
-    "epochs": epochs,
     "batch_size": batch_size,
     "n_batches": n_batches,
     "validation_size": validation_size,
@@ -74,12 +72,12 @@ params = {
     "save_model": True,
 }
 
-
 JOBS = [
-    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_}
+    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_,
+     "epochs": epochs + 10 * N}
     for dscrt in [1000]
     for N in [1, 2, 3, 4, 5]
-    for H in [1.0/16, 1.0/8, 1.0/4, 1.0/3, 1.0/2, 0.75, 1.0]
+    for H in [1.0 / 16, 1.0 / 8, 1.0 / 4, 1.0 / 3, 1.0 / 2, 3.0 / 4, 7.0 / 8, 1.0]
     for mod_ in [
         {"space": 'log', "nn_hidden": 2},
         {"space": 'sig', "nn_hidden": 0}
@@ -94,7 +92,7 @@ pfs = {
 
 def update_params(restart_, epochs_, *args):
     if epochs_ == 50:
-        #return {"batch_size": batch_size * 8}
+        # return {"batch_size": batch_size * 8}
         return {}
     else:
         return {}
@@ -123,8 +121,7 @@ def new_batch(MC, steps, H, **kwargs):
 
 
 def loss_fn(time, Y, U, X, **kwargs):
-
-    payoff = 0.5 * (Y[:,:-1] ** 2 + PENALTY * U[:,:-1] ** 2)
+    payoff = 0.5 * (Y[:, :-1] ** 2 + PENALTY * U[:, :-1] ** 2)
     l_ = torch.mean(payoff) * (time[-1] - time[0])
     v = torch.var(torch.mean(payoff, dim=1) * (time[-1] - time[0]))
     return l_, v

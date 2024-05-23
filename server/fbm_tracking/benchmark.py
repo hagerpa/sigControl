@@ -1,3 +1,5 @@
+#TODO: Correct benchmarks for H=0.5 and H=1.0
+
 import sys
 import numpy as np
 from numpy import cosh, sinh
