@@ -71,7 +71,7 @@ def benchmark(H, kappa=0.1):
             def f(u):
                 return - f1(u) + f2(u)
 
-            return a + quad(f, t, T, points=[t, T], full_output=1)[0]
+            return a + quad(f, s, T, points=[s, T], full_output=1)[0]
 
     def overline_alpha_raw(t, s):
         f = lambda u: z_prime(u, s) * sinh(tau(u))
