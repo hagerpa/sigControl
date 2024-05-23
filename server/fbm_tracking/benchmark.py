@@ -71,7 +71,7 @@ def benchmark(H, kappa=0.1):
         if H >= 0.5:
             return alpha_raw(s,s)
         if H < 0.5:
-            return alpha_diag_raw(max(0.0000001, s))
+            return alpha_diag_raw(s)
 
     def overline_alpha_raw(t, s):
         f = lambda u: z_prime(u, s) * sinh(tau(u))
@@ -92,8 +92,11 @@ def benchmark(H, kappa=0.1):
     sq_dist = 0.5 * quad(sq_f, 0, T, points=[0, T], full_output=1)[0]
 
     # QV term
+    eps = 0.0000001
+    alpha_const = alpha_diag(eps) / eps**(H-1/2)
+    eps_int = (1/(2*H)) * alpha_const**2 * eps**(2*H) / (np.sqrt(kappa) * sinh(tau(0)) * cosh(tau(0)))
     qv_f = lambda s: alpha_diag(s) ** 2 / (np.sqrt(kappa) * sinh(tau(s)) * cosh(tau(s)))
-    qv_term = 0.5 * quad(qv_f, 0, T)[0]
+    qv_term = 0.5 * ( eps_int + quad(qv_f, eps, T)[0] )
 
     return qv_term, sq_dist
 
