@@ -41,23 +41,23 @@ params = {
     "restarts": RESTARTS,
     "validation_size": validation_size,
 
-    #"optim": "Adam",
-    #"learning_rate": 0.1,
-    #"batch_size": 512,
-    #"n_batches": 2 ** 10,
-    #"steps_per_restart": 3,
-    #"epochs": 31,
+    "optim": "Adam",
+    "learning_rate": 0.1,
+    "batch_size": 512,
+    "n_batches": 2 ** 10,
+    "steps_per_restart": 3,
+    "epochs": 31,
 
-    "optim": "LBFGS",
-    "optim_history_size": 40,
-    "optim_line_search_fn": "strong_wolfe",
-    "optim_tolerance_change": 0.0,
-    "optim_max_iter": 100,
-    "learning_rate": 1.0,
-    "n_batches": 1,
-    "batch_size": 1024 * 16 * 8,
-    "steps_per_restart": 1,
-    "epochs": 2,
+    #"optim": "LBFGS",
+    #"optim_history_size": 40,
+    #"optim_line_search_fn": "strong_wolfe",
+    #"optim_tolerance_change": 0.0,
+    #"optim_max_iter": 100,
+    #"learning_rate": 1.0,
+    #"n_batches": 1,
+    #"batch_size": 1024 * 16 * 8,
+    #"steps_per_restart": 1,
+    #"epochs": 2,
 
     "max_gb": MAX_GB,
     "MC_": MC_,
@@ -72,7 +72,9 @@ def update_params(restarts_, epochs_, optim, best_model):
 
 
 JOBS = [
-    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_}
+    {"dscrt_train": dscrt, "dscrt": dscrt, "N": N, "H": H, **mod_,
+     "epochs": 31 + 5*N #Remove when using LBFGS
+     }
     for dscrt in [100]
     for N in [1, 2, 3, 4, 5]
     for H in [1.0 / 16, 1.0 / 8, 1.0 / 4, 1.0 / 3, 1.0 / 2, 3.0 / 4, 7.0 / 8, 1.0]
