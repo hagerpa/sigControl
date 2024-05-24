@@ -21,7 +21,7 @@ jobs = dict()
 if SERVER:
     validation_size = 1024 * 16 * 8
 
-    MC_ = validation_size
+    MC_ = 2**22
     MAX_GB = 128
 else:
     validation_size = 1024 * 8
@@ -29,7 +29,7 @@ else:
     MC_ = validation_size
     MAX_GB = 8
 
-RESTARTS = 5
+RESTARTS = 2
 
 params = {
     "kappa": KAPPA,
