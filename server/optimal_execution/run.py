@@ -12,7 +12,7 @@ KAPPA = 10 ** -3
 KAPPA_T = 10 ** -1
 CONSTRAINT = None  # (-1,1)
 INITIAL = 1.0
-SIGMA = 0.2
+SIGMA = 0.02
 
 result_path = "./results_server/" if SERVER else "./results_local/"
 
@@ -21,13 +21,11 @@ jobs = dict()
 if SERVER:
     validation_size = 1024 * 16 * 8
 
-    epochs = 2
     MC_ = validation_size
     MAX_GB = 128
 else:
     validation_size = 1024 * 8
 
-    epochs = 2
     MC_ = validation_size
     MAX_GB = 8
 
@@ -41,14 +39,14 @@ params = {
     "constraint": CONSTRAINT,
 
     "restarts": RESTARTS,
-    "steps_per_restart": 1,
-    "epochs": epochs,
     "validation_size": validation_size,
 
     "optim": "Adam",
     "learning_rate": 0.1,
     "batch_size": 512,
     "n_batches": 2 ** 10,
+    "steps_per_restart": 3,
+    "epochs": 31,
 
     # "optim": "LBFGS",
     # "optim_history_size": 40,
@@ -58,6 +56,8 @@ params = {
     # "learning_rate": 1.0,
     # "n_batches": 1,
     # "batch_size": 1024 * 16 * 8,
+    # "steps_per_restart": 1,
+    # "epochs": 2,
 
     "max_gb": MAX_GB,
     "MC_": MC_,
