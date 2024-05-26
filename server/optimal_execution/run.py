@@ -46,7 +46,7 @@ params = {
     "batch_size": 512,
     "n_batches": 2 ** 10,
     "steps_per_restart": 3,
-    "epochs": 31,
+    #"epochs": 31,
 
     #"optim": "LBFGS",
     #"optim_history_size": 40,
