@@ -28,7 +28,7 @@ To see example use cases, check out:
 To investigate results presented in the following paper
 📄 [Bank, Bayer, Hager, Nauen, Riedel. *Stochastic Control with Signatures.* (2024+), arXiv:2406.01585](https://arxiv.org/abs/2406.01585)
 refer to the corresponding evaluation notebook:
-📄 `server/...example_name.../Evaluation.ipynb`
+📄 `server/...example_name.../Evaluate Results.ipynb`
 
 ## 📜 License
 This project is licensed under [MIT License](LICENSE).  
