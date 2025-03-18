@@ -67,7 +67,7 @@ params = {
 
     "max_gb": MAX_GB,
     "MC_": MC_,
-    "sig_comp": 'tX',
+    "sig_comp": 'tY',
 
     "save_model": True,
 }
