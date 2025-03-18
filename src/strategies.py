@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import iisignature
 
 
 class DNNStrategy(torch.nn.Module):
@@ -64,3 +65,15 @@ class TimeWeightedAverage(torch.nn.Module):
 
     def parameters(self, recurse: bool = True):
         return [self.dummy_param]
+
+
+def build_strategy(N, space, sig_comp, **kwargs):
+    if space == 'log':
+        strat_ = [DNNStrategy(iisignature.logsiglength(len(sig_comp), N), **kwargs)]
+    elif space == 'sig':
+        strat_ = [DNNStrategy(iisignature.siglength(len(sig_comp), N), **kwargs)]
+
+    if "constraint" in kwargs:
+        strat_ = strat_ + [ConstraintLayer(constraint=kwargs["constraint"])]
+
+    return {'strat': torch.nn.Sequential(*strat_), 'sig_comp': sig_comp, 'space': space, 'N': N}
